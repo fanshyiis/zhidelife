@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>发现-值得</title>
+  <meta name="baidu-site-verification" content="dZDAbhuEuB" />
+  <link rel="shortcut icon" href="/static/favicons/1.png">
+  <link rel="stylesheet" href="/static/css/reset.css">
+  <link rel="stylesheet" href="/static/css/index.css">
+  <link rel="stylesheet" href="/static/css/animate.min.css">
+  <link rel="stylesheet" href="/static/css/font-awesome.css">
+   <style type="text/css">
+.waterfall-info h3 a {
+    overflow: hidden;
+    height: 43px;
+}
+.waterfall-info h3 {
+    margin-top: 8px;
+    font-size: 20px;
+    font-weight: 400;
+    letter-spacing: -.0125em;
+}
+.waterfall-box {
+
+    position: relative;
+    float: left;
+    width: 308px;
+    height: 308px;
+    margin-right: 4px;
+}
+.waterfall-imgbox img {
+    width: 100%;
+    /* height: 100%; */
+    min-height: 308px;
+}
+.waterfall-collect .info{
+  border-right: 3px solid #ee4fad;
+}
+   </style>
+</head>
+<body>
+  <div class="vue">
+<input id="page_id" value="0" style="display:none">
+  <header class="header" id="header">
+    <div class="header-bg"></div>
+    <div class="header-top">
+      <%- include nav %>
+    </div>
+    <div class="banner">
+      <h2 class="banner-titlte"><img src="/static/images/banner-title_img.png" alt="#"></h2>
+      <div class="search">
+        <form action="#">
+          <input type="text" class="search-text" placeholder="搜索你喜欢的">
+          <a href="#" class="search-btn sprite_icon"></a>
+        </form>
+      </div>
+    </div>
+    <div class="header-bg__info">图片：<a href="#">插画师苏寒</a></div>
+  </header>
+<%- include login %>
+  </div>
+
+  <div class="main">
+    <div class="main-inner">
+      <div class="main-list">
+        <div class="recommend-line">
+          <span>大家正在关注</span>
+        </div>
+        <div class="banner_2"></div>
+        <div class="main-list__wrapper clearfix">
+                <div class="noLoad" v-if="!Theme">
+           <div class="spinner">
+         <div class="bounce1"></div>
+        <div class="bounce2"></div>
+        <div class="bounce3"></div>
+      </div>
+        </div>
+          <a style="cursor:pointer" @click=goTheme(theme.objectId) v-for="(theme,index) in Theme" style="margin-bottom:20px;"><img class="blur" :src="theme.mainPic.url" :alt="theme.Theme_title"><span>{{theme.Theme_title}}</span></a>
+        </div>
+      </div>
+      <!-- <div class="main-waterfall"> -->
+<!--         <div class="recommend-line">
+          <span>为您推荐</span>
+        </div> -->
+      <!-- </div> -->
+
+    </div>
+  </div>
+
+  <%- include footer %>
+
+  <script src="/static/js/jquery.js"></script>
+  <script src="/static/js/script.js"></script>
+  <script src="/static/js/vue.min.js"></script>
+  <script src="/static/js/vue_app.js"></script>
+  <script type="text/javascript">
+    var index = new Vue({
+      el:'.main',
+      data:{
+        HotZhide:'',
+        Theme:'',
+      },
+      methods:{
+        Bai:function(e){
+            var z = this.HotZhide[e].zhide;
+            var u = this.HotZhide[e].Unzhide;
+            if (z+u == 0 ) {return '100%'}else{
+              return (z/(z+u)*100).toFixed(0)+'%'
+            }
+          },
+        getThemeHot: function() {
+            var _this = this;
+            $.ajax({
+                url: '/index/getThemeHot',
+                type: "POST",
+                success: function(data) {
+                    if (data.state == 200) {
+                        _this.Theme = data.theme;
+                    }
+                },
+            })
+        },
+        goTheme:function(e){
+
+          window.open('/index/Theme/' + e);
+        }
+      },
+      created(){
+         this.getThemeHot();
+      }
+    })
+  </script>
+
+</body>
+</html>

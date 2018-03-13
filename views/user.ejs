@@ -1,0 +1,851 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>个人中心-值得</title>
+    <link rel="stylesheet" type="text/css" href="/static/css/bootstrap.min.css">
+    <link rel="shortcut icon" href="/static/favicons/1.png">
+    <link rel="stylesheet" href="/static/css/reset.css">
+    <link rel="stylesheet" href="/static/css/index.css">
+    <link rel="stylesheet" href="/static/css/animate.min.css">
+    <link rel="stylesheet" href="/static/css/font-awesome.css">
+    <link rel="stylesheet" href="/static/css/star-rating.css">
+</head>
+
+<body>
+    <div class="vue">
+        <header class="header" id="header" style="height:60px">
+            <div class="header-top header-top__fixed">
+                <%- include nav %>
+            </div>
+        </header>
+        <%- include login %>
+    </div>
+    <div class="main">
+        <div class="info_err animated flipInX" v-if="infos">{{infos}}</div>
+        <div class="main-inner clearfix">
+            <div class="new_head_theme" :style="background()">
+                <!-- <div class="user_av"><img :src="'/static/images/cont/head.jpg'"></div> -->
+                <div class="head_b_btn">
+                    <input v-if="signa_text=='确认'" class="signature" type="" name="" v-model='signature'>
+                    <div class="head_btn_a" @click="GoSigna()">{{signa_text}}</div>
+                    <div class="head_btn_a" @click="GoPic()">
+                        <input id='p1' @change="FileChange" style="display:none" type="file">{{headPic_text}}</div>
+                </div>
+                <div class="signa">
+                    {{signature}}
+                </div>
+            </div>
+            <div class="user_left">
+                <div class="clearfix" v-if="user">
+                    <div class="btn_geng" @click="update()">更新资料</div>
+                    <div class="user_av"><img :src="user.avatar?user.avatar.url:'/static/images/cont/head.jpg'">
+                        <div class="updatehead" @click="updateHead()">更改头像</div>
+                        <input id='p2' @change="FileChange2" style="display:none" type="file">
+                    </div>
+                    <div class="user_info_1 clearfix">
+                        <div class="user_info_nick">{{user.Nick}}<img Title="值得内测vip" class="vip" src="/static/images/vip1.png"></div>
+                        <div class="user_info_nick info_22">{{user.Sex?user.Sex:'性别未知'}}·{{user.Xing?user.Xing:'星座未知'}}</div>
+                        <div class="user_info_nick info_11">{{user.Adress?user.Adress:'位置未知'}}·{{user.Job?user.Job:'工作未知'}} </div>
+                    </div>
+                    <div class="user_info_2">
+                        <div class="info_list clearfix">
+                            <div class="lable_info">值得ID:</div>
+                            <div class="lable_content">{{user.UserId}}</div>
+                        </div>
+                        <div class="info_list clearfix">
+                            <div class="lable_info">绑定手机:</div>
+                            <div class="lable_content">{{user.mobilePhoneNumber?user.mobilePhoneNumber:'未填写'}}</div>
+                        </div>
+                        <div class="info_list clearfix">
+                            <div class="lable_info">绑定邮箱:</div>
+                            <div class="lable_content">{{user.username}}</div>
+                        </div>
+                    </div>
+                    <div class="user_info_3 animated flipInY" v-if="goUpdate">
+                        <div class="close_info_up" @click="goUpdate=false">X</div>
+                        <div class="info_list_1 clearfix">
+                            <div class="lable_info">昵称</div>
+                            <input class="lable_info_2" v-model="user.Nick" type="" name="">
+                        </div>
+                        <div class="info_list_1 clearfix">
+                            <div class="lable_info">性别</div>
+                            <select v-model="user.Sex" class="lable_info_22">
+                                <option>请选择</option>
+                                <option value="男">男</option>
+                                <option value="女">女</option>
+                            </select>
+                        </div>
+                        <div class="info_list_1 clearfix">
+                            <div class="lable_info">星座</div>
+                            <select v-model='user.Xing' class="lable_info_22">
+                                <option>请选择</option>
+                                <option value="白羊座">白羊座</option>
+                                <option value="金牛座">金牛座</option>
+                                <option value="双子座">双子座</option>
+                                <option value="巨蟹座">巨蟹座</option>
+                                <option value="狮子座">狮子座</option>
+                                <option value="处女座">处女座</option>
+                                <option value="天秤座">天秤座</option>
+                                <option value="天蝎座">天蝎座</option>
+                                <option value="射手座">射手座</option>
+                                <option value="摩羯座">摩羯座</option>
+                                <option value="水瓶座">水瓶座</option>
+                                <option value="双鱼座">双鱼座</option>
+                            </select>
+                        </div>
+                        <div class="info_list_1 clearfix">
+                            <div class="lable_info">位置</div>
+                            <input class="lable_info_2" v-model="user.Adress" type="" name="">
+                        </div>
+                        <div class="info_list_1 clearfix">
+                            <div class="lable_info">工作</div>
+                            <input class="lable_info_2" v-model="user.Job" type="" name="">
+                        </div>
+                        <div class="info_list_1 clearfix">
+                            <div class="update_a" @click="updateInfo()">确认更新</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="ac_info clearfix">
+                    <div class="user_info_b">
+                        <div class="info_num_user left_line_user">{{zhideL}}</div>
+                        <div>我的值得</div>
+                    </div>
+                    <div class="user_info_b">
+                        <div class="info_num_user left_line_user">{{commentL}}</div>
+                        <div>我的评论</div>
+                    </div>
+                    <div class="user_info_b">
+                        <div class="info_num_user">{{ZanNum()}}</div>
+                        <div>获得赞同</div>
+                    </div>
+                </div>
+                <div class="p_list">
+                    <div class="p_list_item" @click="Right_go(5)"><i class="icon-star" style="padding-right:4px;"></i>我的动态
+                        <div class="item_num" v-if="trendsL != 0">{{trendsL}}</div>
+                    </div>
+                    <div class="p_list_item" @click="Right_go(6)"><i class="icon-envelope-alt" style="padding-right:4px;"></i>我的私信
+                        <div class="item_num" v-show="mailNum != 0">{{mailNum}}</div>
+                    </div>
+                </div>
+            </div>
+            <div class="user_right">
+                <div class="right_content_head">
+                    <div id="r1" class="right_item item_actvie_h" @click="Right_go(1)">我的值得</div>
+                    <div id="r2" class="right_item" @click="Right_go(2)">我的评论</div>
+                    <div id="r3" class="right_item" @click="Right_go(3)">关注主题</div>
+                    <div id="r4" class="right_item" @click="Right_go(4)">关注值得</div>
+                    <div id="r5" class="right_item" @click="Right_go(5)">动态
+                        <div class="d_dot_n">{{trendsL}}</div>
+                    </div>
+                    <div id="r6" class="right_item" @click="Right_go(6)">私信
+                         <div class="d_dot_n" v-show="mailNum != 0">{{mailNum}}</div>
+                    </div>
+                </div>
+                <div class="right_content_main clearfix">
+                    <div class="main-waterfall__wrapper clearfix animated fadeInUp" v-show="look == 1" style="-webkit-animation-duration: .3s;">
+                        <div v-if="zhide" @click="goZhide(item.objectId)" class="main-waterfall__row clearfix content_q" v-for="(item,index) in zhide" style="padding-left:20px">
+                            <div class="waterfall-imgbox waterfall-box" style="height:184px!important">
+                                <a class="img_a" href="#"><img :src="item.mainPic.url" style="height:auto" alt="#"></a>
+                            </div>
+                            <div class="waterfall-box content_zhi" style="height:182px;width:550px;overflow:hidden;">
+                                <div class="bai">
+                                    <input data-symbol="&#xe005;" data-default-caption="{rating} hearts" data-star-captions="{}" disabled="true" :value="HeartP(index)" type="number" class="rating" min=0 max=5 step=0.5 data-size="sm">
+                                </div>
+                                <div class="waterfall-info waterfall-info__top">
+                                    <h3 class="content_title" style="font-size: 16px;">{{item.ZD_title}}</h3>
+                                    <p class="author">@{{item.belong.Nick}}<span class="content_time">{{item.Time}}</span></p>
+                                    <div class="content_text">{{item.ZD_summary}}</div>
+                                    <div class="content_info">
+                                        <div class="content_info_1">已有<span class="span_1">{{NumPing(index)}}</span>人给出值得评分</div>
+                                        <div class="content_bottom"><i class="icon-eye-open content_icon"></i>{{item.lookNum}}<i class="icon-comment content_icon"></i>{{NumPing(index)}}</div>
+                                    </div>
+                                    <!-- <div class="zhide_go">
+                                    <div class="zhide_yes" @click='Zhide(item.objectId,index)'><i class="icon-heart icon_btn"></i>值得</div>
+                                    <div class="zhide_no" @click='unZhide(item.objectId,index)'><i class="icon-heart-empty icon_btn"></i>不值得</div>
+                                </div> -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="comment_main_in animated fadeInUp" v-show="look == 2" style="-webkit-animation-duration: .3s;">
+                        <div class="comment_list" v-for="(item,index) in comment">
+                            <div><span class="org_color">@{{user.Nick}}</span>在值得：<span class="c_title" @click="goZhide(item.zbelong.objectId)">{{item.zbelong.ZD_title}}</span>中评论：</div>
+                            <div class="comment_cc" v-html='item.Content'></div>
+                            <div class="comment_bottom_a clearfix">
+                                <div class="c_b_a_l"><i class="icon-time content_icon"></i>{{item.Time}}</div>
+                                <div class="c_b_a_r" @click="goZhide2(item.zbelong.objectId,item.objectId)">查看更多 ></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="comment_main_in animated fadeInUp" v-show="look == 3" style="-webkit-animation-duration: .3s;margin-left:25px;">
+                        <div @click=goTheme(theme.objectId) class="left_new" v-for="(theme,index) in followtheme"><img class="blur" :src="theme.mainPic.url" alt="#">
+                            <div class="shot_text">{{theme.Theme_title}}</div>
+                        </div>
+                    </div>
+                    <div class="main-waterfall__wrapper clearfix animated fadeInUp" v-show="look == 4" style="-webkit-animation-duration: .3s;">
+                        <div @click="goZhide(item.objectId)" class="main-waterfall__row clearfix content_q" v-for="(item,index) in followzhide" style="padding-left:20px">
+                            <div class="waterfall-imgbox waterfall-box" style="height:184px!important">
+                                <a class="img_a" href="#"><img :src="item.mainPic.url" style="height:auto" alt="#"></a>
+                            </div>
+                            <div class="waterfall-box content_zhi" style="height:182px;width:550px;overflow:hidden;">
+                                <div class="bai">
+                                    <input data-symbol="&#xe005;" data-default-caption="{rating} hearts" data-star-captions="{}" disabled="true" :value="HeartP2(index)" type="number" class="rating" min=0 max=5 step=0.5 data-size="sm">
+                                </div>
+                                <div class="waterfall-info waterfall-info__top">
+                                    <h3 class="content_title" style="font-size: 16px;">{{item.ZD_title}}</h3>
+                                    <p class="author">@{{item.belong.Nick}}<span class="content_time">{{item.Time}}</span></p>
+                                    <div class="content_text">{{item.ZD_summary}}</div>
+                                    <div class="content_info">
+                                        <div class="content_info_1">已有<span class="span_1">{{NumPing2(index)}}</span>人给出值得评分</div>
+                                        <div class="content_bottom"><i class="icon-eye-open content_icon"></i>{{item.lookNum}}<i class="icon-comment content_icon"></i>{{NumPing2(index)}}</div>
+                                    </div>
+                                    <!-- <div class="zhide_go">
+                                    <div class="zhide_yes" @click='Zhide(item.objectId,index)'><i class="icon-heart icon_btn"></i>值得</div>
+                                    <div class="zhide_no" @click='unZhide(item.objectId,index)'><i class="icon-heart-empty icon_btn"></i>不值得</div>
+                                </div> -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="main-waterfall__wrapper clearfix animated fadeInUp" v-show="look == 5" style="-webkit-animation-duration: .3s;">
+                        <div class="trends_list" v-for="(trend,index) in trends">
+                            <div v-if="trend.Type == 'comment'" class="clearfix">
+                                <div class="dot_left cc1"></div>
+                                <div><img class="trend_head" :src="trend.author.avatar.url"><span class="orange2">@{{trend.author.Nick}}</span>评分了你的值得<span class="orange2">《{{trend.zhide.ZD_title}}》</span></div>
+                                <div class="trend_info">分数：{{trend.comment.Rate}}<span>&nbsp&nbsp&nbsp</span>{{transT(trend.createdAt)}}<span>&nbsp&nbsp&nbsp</span>评价内容：</div>
+                                <div class="comment_cc comment_cc_2" v-html='trend.comment.Content'></div>
+                                <div class="trend_bottom clearfix" @click="goZhide(trend.zhide.objectId)">查看更多></div>
+                                <div class=trend_line></div>
+                            </div>
+                            <div v-if="trend.Type == 'comment_co'" class="clearfix">
+                                <div class="dot_left cc2"></div>
+                                <div><img class="trend_head" :src="trend.author.avatar.url"><span class="orange2">@{{trend.author.Nick}}</span>回复你在值得<span class="orange2">《{{trend.zhide.ZD_title}}》中的评论</span></div>
+                                <div class="trend_info">{{transT(trend.createdAt)}}<span>&nbsp&nbsp&nbsp</span>评论内容：</div>
+                                <div class="comment_cc comment_cc_2" v-html='trend.comment_co.content' style="font-size:15px;color:#666"></div>
+                                <div class="trend_bottom clearfix" @click="goZhide(trend.zhide.objectId)">查看更多></div>
+                                <div class=trend_line></div>
+                            </div>
+                            <div v-if="trend.Type == 'followzhide'" class="clearfix">
+                                <div class="dot_left cc3"></div>
+                                <div style="margin-bottom:20px;"><img class="trend_head" :src="trend.author.avatar.url"><span class="orange2">@{{trend.author.Nick}}</span>关注了你的值得<span class="orange2">《{{trend.zhide.ZD_title}}》</span>
+                                    <br>
+                                    <div style="color:#ccc;" class="trend_info">{{transT(trend.createdAt)}}</div>
+                                </div>
+                                <div class=trend_line></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="main-waterfall__wrapper clearfix animated fadeInUp" v-show="look == 6" style="-webkit-animation-duration: .3s;">
+                        <div class="mail_list">
+                            <div class="edit_mail" @click="edito()"><i class="icon-pencil" style="margin-right:5px;"></i>写私信</div>
+                            <div v-if="edit" class="animated bounceInRight">
+                                <div class="send_on clearfix" v-if="!sendok">
+                                    <div class="content_text clearfix">
+                                        <div class="input_mail_lable clearfix">收件人值得ID:</div>
+                                        <input v-model="checkgo" @keyup="checkuser()" class="input_mail_text" type="text" maxlength="8" />
+                                        <div class="ok_green" v-if="check"><i class="icon-ok-sign"> </i></div>
+                                        <div class="ok_info" v-if="check">@ {{check}}</div>
+                                        <div class="ok_red" v-if="checkno"><i class="icon-remove"> </i></div>
+                                        <div class="ok_info" v-if="checkno">没有此值得用户</div>
+                                    </div>
+                                    <div class="content_text mail_text clearfix">
+                                        <div class="input_mail_lable">私信内容:</div>
+                                        <textarea v-model='mail_content' class="input_mail_text mail_t" type="text" rows="4" placeholder="在这里输入..."></textarea>
+                                    </div>
+                                    <div class="send_mail clearfix" @click="sendMail()">发送</div>
+                                </div>
+                                <div class="send_on clearfix text-al" v-if="sendok">
+                                    <i class="icon-ok-sign"> </i>发送成功
+                                </div>
+                            </div>
+                            <div class="mail">
+                                <div class="right_content_head mail_g clearfix">
+                                    <div id="i1" class="right_item2 item_actvie_h" @click="mail_go(1)">我收到的</div>
+                                    <div id="i2" class="right_item2" @click="mail_go(2)">我发出的</div>
+                                </div>
+                                <div v-show="mail_num == 1" class="clearfix" style="min-height:200px;margin-top:20px">
+                                    <div :id="item.objectId" class="mail_list_item" v-for="(item,index) in mail">
+                                        <div class="mail_ll" style="margin-bottom:10px;"><img class="trend_head" :src="item.author.avatar.url"><span class="orange2">@{{item.author.Nick}}</span>给您发送了私信
+                                            <div style="color:#ccc;" class="trend_info2"><span class="wei_t" :class="item.state==1?'hui':''">{{item.state==1?'已读':'未读'}}</span>{{transT(item.createdAt)}}</div>
+                                            <div class="trend_bottom2 clearfix" @click="goRead(item.objectId)">阅读</div>
+                                            <div class="mail_c">{{item.content}}</div>
+                                        </div>
+                                        <div class=trend_line></div>
+                                    </div>
+                                </div>
+                                <div v-show="mail_num == 2" class="clearfix" style="min-height:200px;margin-top:20px">
+                                    <div :id="item.objectId" class="mail_list_item" v-for="(item,index) in mail2">
+                                        <div class="mail_ll" style="margin-bottom:10px;">您给<span class="orange2" style="margin-left:5px">@{{item.author.Nick}}</span>发送的私信
+                                            <div style="color:#ccc;" class="trend_info2"><span class="wei_t" :class="item.state==1?'hui':''">{{item.state==1?'对方已读':'已送达'}}</span>{{transT(item.createdAt)}}</div>
+                                            
+                                            <div class="mail_cc">{{item.content}}</div>
+                                        </div>
+                                        <div class=trend_line></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <%- include footer %>
+        <script src="/static/js/jquery.js"></script>
+        <script src="/static/js/script_new.js"></script>
+        <script src="/static/js/vue.min.js"></script>
+        <script src="/static/js/vue_app.js"></script>
+        <script src="/static/js/star-rating.js" type="text/javascript"></script>
+        <script type="text/javascript">
+        var main = new Vue({
+            el: '.main',
+            data: {
+                zhide: '',
+                infos: '',
+                user: '',
+                signature: '',
+                signa_text: '写签名',
+                HeadPic: '',
+                headPic_text: '更改封面',
+                goUpdate: false,
+                zhideL: 0,
+                comment: '',
+                commentL: 0,
+                look: 1,
+                followtheme: '',
+                followzhide: '',
+                avatarPic: '',
+                Time: '',
+                trends: '',
+                trendsL: 0,
+                check: '',
+                checkgo: '',
+                checkno: false,
+                mailid: '',
+                mail_content: '',
+                sendok: '',
+                edit: false,
+                mail: '',
+                mail_num: 1,
+                mail2:'',
+                mailNum:0
+            },
+            methods: {
+                edito: function() {
+                    this.edit = !this.edit
+                },
+                goRead: function(e) {
+                    $("#" + e).find(".mail_c").show();
+                    $.ajax({
+                        url: '/user/ReadMail',
+                        method: 'POST',
+                        data: {
+                            id: e,
+                        },
+
+                        success: function(data) {
+                            if (data.state == 200) {}
+                        }
+                    })
+
+                },
+                checkuser: function() {
+                    var _this = this;
+                    //console.log(this.checkgo)
+                    if (this.checkgo.length == 8) {
+                        $.ajax({
+                            url: '/user/CheckUser',
+                            method: 'POST',
+                            data: {
+                                id: _this.checkgo,
+                            },
+
+                            success: function(data) {
+                                if (data.state == 200) {
+                                    _this.checkno = false;
+                                    _this.check = data.check;
+                                    _this.mailid = data.toid;
+
+
+
+                                } else if (data.state == 404) {
+                                    _this.checkno = true;
+                                    _this.check = '';
+                                } else {
+
+                                }
+                            }
+                        })
+                    }
+
+                },
+                sendMail: function() {
+                    var _this = this;
+                    if (this.mail_content == '') {
+                        this.infosOn('完善私信内容');
+                        return;
+                    }
+                    if (this.check == '') {
+                        this.infosOn('完善收件人ID');
+                        return;
+                    }
+                    $.ajax({
+                        url: '/user/sendMail',
+                        method: 'POST',
+                        data: {
+                            mailid: _this.mailid,
+                            mail_content: _this.mail_content,
+                        },
+
+                        success: function(data) {
+                            if (data.state == 200) {
+                                _this.sendok = true;
+                                setTimeout(function() {
+                                    _this.sendok = false;
+                                    _this.edit = false;
+                                }, 2000)
+
+
+                            } else {
+                                _this.infosOn("发送失败！")
+                            }
+                        }
+                    })
+
+
+                },
+                transT: function(e) {
+                    var m = e.replace("T", " ");
+                    m = m.replace("Z", " ").slice(0, 16);
+                    return m
+                },
+                getTrends: function() {
+                    var _this = this;
+                    $.ajax({
+                        url: '/user/getTrends',
+                        method: 'POST',
+                        success: function(data) {
+                            if (data.state == 200) {
+                                _this.trends = data.trends;
+                                if (data.trends) {
+                                    _this.trendsL = data.trends.length
+                                }
+
+
+                            } else {
+                                alert('data.error');
+                            }
+                        }
+                    })
+                },
+                getMails: function() {
+                    var _this = this;
+                    $.ajax({
+                        url: '/user/getMails',
+                        method: 'POST',
+                        success: function(data) {
+                            if (data.state == 200) {
+                                _this.mail = data.mail;
+                                if (data.mail) {
+                                    var count = 0;
+                                    for (var i = 0; i < data.mail.length; i++) {
+                                         if (data.mail[i].state == 0) {
+                                            count ++
+                                         } 
+                                    }
+                                    _this.mailNum = count;
+                                }
+
+
+                            } else {
+                                alert('data.error');
+                            }
+                        }
+                    });
+                    $.ajax({
+                        url: '/user/getMyMails',
+                        method: 'POST',
+                        success: function(data) {
+                            if (data.state == 200) {
+                                _this.mail2 = data.mail;
+                                if (data.mail) {
+                                    _this.mailNum2 = data.mail.length
+                                }
+
+
+                            } else {
+                                alert('data.error');
+                            }
+                        }
+                    })
+                },
+                onTime: function() {
+                    var _this = this;
+                    _this.Time = getNowFormatDate();
+                    setInterval(function() {
+                        _this.Time = getNowFormatDate();
+                    }, 60000)
+                },
+                getUser: function() {
+                    var _this = this;
+                    $.ajax({
+                        url: '/index/getUser',
+                        method: 'POST',
+                        success: function(data) {
+                            if (data.state == 200) {
+                                _this.user = data.user;
+                                _this.signature = data.user.Signature;
+                                _this.getFollowTheme();
+                                _this.getFollowZhide();
+                                if (data.user.Head_Pic) {
+                                    _this.HeadPic = data.user.Head_Pic.url
+                                }
+
+                            } else {
+                                alert('data.error');
+                            }
+                        }
+                    })
+                },
+                updateHead: function() {
+                    $("#p2").click();
+                },
+                getMyZhide: function() {
+                    var _this = this;
+                    $.ajax({
+                        url: '/user/getUserZhide',
+                        method: 'POST',
+                        success: function(data) {
+                            if (data.state == 200) {
+                                _this.zhide = data.zhide;
+                                _this.zhideL = data.zhide.length;
+                                setTimeout(function() {
+                                    var $input = $('input.rating'),
+                                        count = Object.keys($input).length;
+                                    if (count > 0) {
+                                        $input.rating();
+                                    }
+                                }, 0);
+                            } else {
+                                alert('data.error');
+                            }
+                        }
+                    })
+                },
+                getFollowTheme: function() {
+                    var _this = this;
+                    //console.log(_this.user);
+                    $.ajax({
+                        url: '/user/getFollowTheme',
+                        method: 'POST',
+                        data: {
+                            Theme: JSON.stringify(_this.user.Follow_Theme),
+                        },
+                        success: function(data) {
+                            if (data.state == 200) {
+                                _this.followtheme = data.followtheme;
+                            } else {
+                                alert('data.error');
+                            }
+                        }
+                    })
+                },
+                getFollowZhide: function() {
+                    var _this = this;
+                    //console.log(_this.user);
+                    $.ajax({
+                        url: '/user/getFollowZhide',
+                        method: 'POST',
+                        data: {
+                            Zhide: JSON.stringify(_this.user.Follow_Zhide),
+                        },
+                        success: function(data) {
+                            if (data.state == 200) {
+                                _this.followzhide = data.followzhide;
+                            } else {
+                                alert('data.error');
+                            }
+                        }
+                    })
+                },
+                HeartP: function(index) {
+                    if (this.zhide[index].Rate != '' && this.zhide[index].Rate) {
+                        var arr = this.zhide[index].Rate;
+                        var all = 0;
+                        for (var i = 0; i < arr.length; i++) {
+                            all = parseFloat(arr[i]) + all
+                        }
+                        var m = all / arr.length
+                        return m;
+                    } else {
+                        return 0
+                    }
+
+                },
+                HeartP2: function(index) {
+                    if (this.followzhide[index].Rate) {
+                        var arr = this.followzhide[index].Rate;
+                        var all = 0;
+                        for (var i = 0; i < arr.length; i++) {
+                            all = parseFloat(arr[i]) + all
+                        }
+                        var m = all / arr.length
+                        return m;
+                    } else {
+                        return 0
+                    }
+
+                },
+                Right_go: function(e) {
+                    $('.right_item').removeClass('item_actvie_h');
+                    $('#r' + e).addClass('item_actvie_h');
+                    this.look = e;
+                    if (e == 6) {
+                        this.getMails();
+                    }
+                    if (e == 1 || e == 4) {
+                        setTimeout(function() {
+                            var $input = $('input.rating'),
+                                count = Object.keys($input).length;
+                            if (count > 0) {
+                                $input.rating();
+                            }
+                        }, 0);
+                    }
+                },
+                mail_go: function(e) {
+                    this.mail_num = e;
+                    $('#i1').removeClass('item_actvie_h');
+                    $('#i2').removeClass('item_actvie_h');
+                    $('#i' + e).addClass('item_actvie_h');
+
+
+                },
+                getMyComment: function() {
+                    var _this = this;
+                    $.ajax({
+                        url: '/user/getUserComment',
+                        method: 'POST',
+                        success: function(data) {
+                            if (data.state == 200) {
+                                _this.comment = data.comment;
+                                _this.commentL = data.comment.length;
+                            } else {
+                                alert('data.error');
+                            }
+                        }
+                    })
+                },
+                ZanNum: function() {
+                    var num = 0;
+                    var arr = this.comment;
+                    for (var i = 0; i < arr.length; i++) {
+                        if (arr[i].Zan_arr) {
+                            var a = arr[i].Zan_arr.length;
+                            num = num + a;
+                        }
+                    }
+                    return num;
+                },
+                update: function() {
+                    this.goUpdate = true;
+                },
+                updateInfo: function() {
+                    var _this = this;
+                    $.ajax({
+                        url: '/user/updateInfo',
+                        data: {
+                            Nick: _this.user.Nick,
+                            Sex: _this.user.Sex,
+                            Xing: _this.user.Xing,
+                            Adress: _this.user.Adress,
+                            Job: _this.user.Job,
+
+                        },
+                        method: 'POST',
+                        success: function(data) {
+                            if (data.state == 200) {
+                                _this.goUpdate = false;
+                                _this.getUser()
+                            } else {
+                                alert('data.error');
+                            }
+                        }
+                    })
+                },
+                goTheme: function(e) {
+
+                    window.open('/index/Theme/' + e);
+                },
+                GoSigna: function() {
+                    var _this = this;
+                    if (this.signa_text == '确认') {
+                        $.ajax({
+                            url: '/user/addSigna',
+                            data: {
+                                Signa: _this.signature
+                            },
+                            method: 'POST',
+                            success: function(data) {
+                                if (data.state == 200) {
+                                    _this.signa_text = '写签名'
+                                } else {
+                                    alert('data.error');
+                                }
+                            }
+                        })
+                    } else {
+                        this.signa_text = '确认';
+                    }
+
+                },
+                goZhide: function(e) {
+
+                    window.open('/index/zhide/' + e);
+                },
+                goZhide2: function(e, n) {
+
+                    window.open('/index/zhide/' + e + '#' + n);
+                },
+                NumPing: function(index) {
+                    if (this.zhide[index].Rate) {
+                        return this.zhide[index].Rate.length
+                    } else {
+                        return 0
+                    }
+
+                },
+                NumPing2: function(index) {
+                    if (this.followzhide[index].Rate) {
+                        return this.followzhide[index].Rate.length
+                    } else {
+                        return 0
+                    }
+
+                },
+                FileChange: function(e) {
+                    var files = e.target.files || e.dataTransfer.files;
+                    if (!files.length) return;
+                    this.createImage(files);
+                },
+
+                createImage: function(file) {
+                    if (typeof FileReader === 'undefined') {
+                        alert('您的浏览器不支持图片上传，请升级您的浏览器');
+                        return false;
+                    }
+                    var image = new Image();
+                    var _this = this;
+                    var leng = file.length;
+                    for (var i = 0; i < leng; i++) {
+                        var reader = new FileReader();
+                        reader.readAsDataURL(file[i]);
+                        reader.onload = function(e) {
+                            _this.HeadPic = e.target.result;
+                            _this.headPic_text = '确认更改';
+                        };
+                    }
+                },
+                FileChange2: function(e) {
+                    var files = e.target.files || e.dataTransfer.files;
+                    if (!files.length) return;
+                    this.createImage2(files);
+                },
+
+                createImage2: function(file) {
+                    if (typeof FileReader === 'undefined') {
+                        alert('您的浏览器不支持图片上传，请升级您的浏览器');
+                        return false;
+                    }
+                    var image = new Image();
+                    var _this = this;
+                    var leng = file.length;
+                    for (var i = 0; i < leng; i++) {
+                        var reader = new FileReader();
+                        reader.readAsDataURL(file[i]);
+                        reader.onload = function(e) {
+                            _this.avatarPic = e.target.result;
+                            _this.updateHeadPic();
+                        };
+                    }
+                },
+                GoPic: function() {
+                    if (this.headPic_text == '确认更改') {
+                        var _this = this;
+                        $.ajax({
+                            url: '/user/addHeadPic',
+                            data: {
+                                pic: _this.HeadPic
+                            },
+                            method: 'POST',
+                            success: function(data) {
+                                if (data.state == 200) {
+                                    _this.headPic_text = '更改封面'
+                                } else {
+                                    alert('data.error');
+                                }
+                            }
+                        })
+
+                    } else {
+                        $("#p1").click();
+
+                    }
+                },
+                updateHeadPic: function() {
+                    var _this = this;
+                    $.ajax({
+                        url: '/user/updateAvatar',
+                        data: {
+                            avatarPic: _this.avatarPic
+                        },
+                        method: 'POST',
+                        success: function(data) {
+                            if (data.state == 200) {
+                                _this.infosOn('修改头像成功');
+                                _this.getUser()
+                            } else {
+                                alert('data.error');
+                            }
+                        }
+                    })
+                },
+                infosOn: function(e) {
+                    var _this = this;
+                    this.infos = e;
+                    setTimeout(function() {
+                        _this.infos = '';
+                    }, 2000);
+                },
+                background: function() {
+                    var m = 'background:url(' + this.HeadPic + ') top center / cover no-repeat;background-size: cover;background-repeat: no-repeat;';
+                    if (this.HeadPic) {
+                        return m
+                    } else {
+                        return 'background: url(/static/images/header_bg.png);background-size: cover;background-repeat: no-repeat;'
+
+
+                    }
+                },
+
+            },
+            created() {
+                var _this = this;
+                this.getUser();
+                this.getMyZhide();
+                this.getMyComment();
+                this.getTrends();
+                this.getMails();
+                
+
+
+            }
+
+        })
+        </script>
+</body>
+
+</html>

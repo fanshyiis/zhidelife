@@ -1,0 +1,30 @@
+          <div class="container" style="    padding-right: 0px;
+    padding-left: 0px;">
+          <div class="info_err animated flipInX" v-if="errors">{{errors}}</div>
+                    <a href="#" class="header-logo"></a>
+                    <nav class="header-nav">
+                        <a href="/index" class="item">发现</a>
+                        <a href="/index/newest" class="item new-icon">最新<i></i></a>
+                       <!--  <a href="#" class="item">主题</a> -->
+                       <!--  <a href="#" class="item new-icon">极客桌面<i></i></a>
+                        <a href="#" class="item">主题</a>
+                        <a href="#" class="item">圈子</a> -->
+                    </nav>
+                    <template v-if="!user">
+                        <div class="header-user">
+                        <a id="go_ping" href="#" class="register" style="width:70px;display:none"><i class="icon-star-empty" style="padding-right:4px;"></i>评分</a>
+                            <a href="#" class="register">注册</a>
+                            <a href="#" class="login">登录</a>
+
+                        </div>
+                    </template>
+                    <template v-if="user">
+                        <div class="header-user">
+                        <a id="go_ping" href="#" class="register" style="width:70px;display:none"><i class="icon-star-empty" style="padding-right:4px;"></i>评分</a>
+                            <a href="/user" class="username">{{user.Nick}}</a>
+                            <a href="/index/newZhide" class="username" style="width:32px;padding:0px;"><i class="icon-pencil"></i></a>
+                            <a href="/index/logout" class="username" style="width:32px;padding:0px;"><i class="icon-arrow-right"></i></a>
+                            <!-- {{user.Nick}} -->
+                        </div>
+                    </template>
+                </div>

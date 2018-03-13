@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>最新-值得</title>
+    <link rel="stylesheet" type="text/css" href="/static/css/bootstrap.min.css">
+    <link rel="shortcut icon" href="/static/favicons/1.png">
+    <link rel="stylesheet" href="/static/css/reset.css">
+    <link rel="stylesheet" href="/static/css/index.css">
+    <link rel="stylesheet" href="/static/css/animate.min.css">
+    <link rel="stylesheet" href="/static/css/font-awesome.css">
+    <link rel="stylesheet" href="/static/css/star-rating.css">
+</head>
+
+<body>
+    <div class="vue">
+        <header class="header" id="header" style="height:60px">
+            <div class="header-top header-top__fixed">
+                <%- include nav %>
+            </div>
+        </header>
+        <%- include login %>
+    </div>
+    <div class="main" style="padding-bottom:0px">
+        <div>
+            <div class="info_err animated flipInX" v-if="infos">{{infos}}</div>
+            <div class="zhide_head">
+                <div class="look_more" @click="lookmore()"><img class="look_img" :src="more_img">{{look}}</div>
+                <div class="zhide_info_w">
+                    <div class="zhide_sunmmary_head">
+                        <!-- <img class="zhide_c_s_img" v-if="zhide" :src="zhide.mainPic.url"> -->
+                        <div class="zhide_info_right">
+                            <div class="zhide_info_title">{{zhide.ZD_title}}</div>
+                            <div class="zhide_info_summary">{{zhide.ZD_summary}}</div>
+                            <div class="zhide_tag">
+                                <div class="tag_list clearfix" v-for="item in tag_arr">
+                                    <div class="tag-left"><span class="tag_dot">·</span></div>
+                                    <div class="tag-center">{{item.tag}}</div>                                   
+                                </div>
+                                
+                            </div>
+                            <div class="zhide_info_bottom" v-if="zhide">
+                                <img class="zhide_c_avatar" :src="zhide.belong.avatar?zhide.belong.avatar.url:'/static/images/cont/head.jpg'">
+                                <div class="zhide_c_text" v-if="zhide">@{{zhide.belong.Nick}}</div>
+                                <div class="zhide_ping">
+                                    <img class="ping_img" src="/static/images/ping.png">
+                                    <span class="ping_num"><span class="ping_text">{{comment.length}}</span>条评论</span>
+                                </div>
+                                <div class="zhide_time"><i class="icon-time content_icon"></i>{{zhide.Time}}</div>
+                            </div>
+                        </div>
+                        <div class="zhide_info_rr">
+                            <div class="zhide_heart" v-if='zhide'>
+                                <input data-symbol="&#xe005;" data-default-caption="{rating} hearts" data-star-captions="{}" disabled="true" :value="rate()" type="number" class="rating" min=0 max=5 step=0.5 data-size="sm">
+                            </div>
+                            <div class="info_rr info_rr_line"><span class="info_rr_title">评分人数</span>
+                                <br><span class="info_rr_num">{{comment.length}}</span></div>
+                            <div class="info_rr"><span class="info_rr_title">阅读量</span>
+                                <br><span class="info_rr_num">{{zhide.lookNum}}</span></div>
+                            <div class="info_rr_btn">
+                                <div id="go_pp" class="rr_btn" @click="Ping()"><i class="icon-star-empty" style="padding-right:4px;"></i>评分</div>
+                                <div class="rr_btn" @click="Follow_z()"><i class="icon-bell" style="padding-right:4px;"></i>{{Follow}}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="zhide_info_n">
+                    <div class="zhide_more_content" v-html="zhide.ZD_content" v-if="more"></div>
+                </div>
+            </div>
+            <div class="zhide_h_b"></div>
+            <div class="zhdie_ping_content clearfix">
+                <div class="zhide_info_p">
+                    <div class="zhide_ping_left">
+                        <div class="noLoad" style="width:75%;float:left" v-show="comment2">
+           <div class="spinner">
+         <div class="bounce1"></div>
+        <div class="bounce2"></div>
+        <div class="bounce3"></div>
+      </div>
+      </div>
+                        <div v-if="comment" v-for="(item,index) in comment" class="zhide_ping_item clearfix" :id="item.objectId">
+                          <div class="comment_rate"><input data-symbol="&#xe005;" data-default-caption="{rating} hearts" data-star-captions="{}" disabled="true" :value="item.Rate" type="number" class="rating" min=0 max=5 step=0.5 data-size="sm"></div>
+                          <div class="comment_author clearfix">
+                          <img class="zhide_c_avatar" :src="item.belong.avatar?item.belong.avatar.url:'/static/images/cont/head.jpg'">
+                          <div class="comment_name">
+                          @{{item.belong.Nick}}<br>
+                          <div class="comment_time">{{item.Time}}</div>
+                          </div>
+                          
+                          
+                          </div>
+                          <div v-html='item.Content'></div>
+                          <div class="comment_bottom">
+                            <div class="cb_1" v-if='comment'><i class="icon-thumbs-up content_icon"></i><span class="znu">{{ZanNum(index)}}</span>人觉得赞同</div>
+                            <div class="cb_2" @click="Comment_zan(item.objectId,index)">赞</div>
+                            <div class="cb_3" @click="getCoCo(item.objectId,index)">{{item.count}}条评论</div>
+                            <div class="cb_4" @click="upCoCo(item.objectId)">收起评论</div>
+                          </div>
+                           <div class="co_co animated fadeInUp"  style="-webkit-animation-duration: .3s;">
+                               <div class="co_co_item" v-for="co in item.comment_list">
+                                   <div class="coco_head clearfix">
+                                   <img class="zhide_c_avatar" :src="co.belong.avatar?co.belong.avatar.url:'/static/images/cont/head.jpg'">
+                                      <div class="comment_name">
+                                        @{{co.belong.Nick}}<br>
+                                        <div class="comment_time">{{co.Time}}</div>
+                                        </div>                          
+                                   </div>
+                                   <div class="coco_content">
+                                       {{co.content}}
+                                   </div>
+                               </div>
+                               <div class="coco_ping">
+                                   <textarea placeholder="我也说两句..."  class="main_first_t2" type="text" rows="2" ></textarea>
+                                   <div class="coco_btn" @click="Comment_up(item.objectId,index)">提交</div>
+                               </div>
+                           </div>
+                      </div>
+                      <div v-if="comment == ''" class="zhide_ping_item clearfix">
+                          <div class="no_comment">
+                            <i class="icon-file content_icon"></i>暂无评论，快去写个漂亮的评论吧！
+                          </div>
+                      </div>
+                    </div>
+                    <div class="zhide_ping_right">
+                        <div class="zhide_ping_r_t"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="go_ping animated fadeInUp" v-if="ping" style="-webkit-animation-duration: .2s;">
+            <div class="close_ping" @click="Close()">X</div>
+            <div class="new_main">
+                <div class="main_content">
+                    <div class="main_first">
+                        <textarea v-model="ZD_content" class="main_first_t" type="text" rows="4"></textarea>
+                    </div>
+                </div>
+                <div class="main_bottom clearfix">
+                    <div class="bottom_left">
+                        <div class="bb1" style="width:100px;margin-left:20px;" @click="addText()"><i class="icon-edit" style="margin-right:3px"></i>添加段落</div>
+                        <div class="bb1" style="width:100px;margin-left:10px;" @click="inputImg($event)"><i class="icon-picture" style="margin-right:3px"></i>{{addPicText}}
+                            <input @change="FileChange2" style="display:none" type="file">
+                        </div>
+                    </div>
+                    <div class="bottom_right">
+                        <div class="ping_star">
+                          <input data-symbol="&#xe005;" data-default-caption="{rating} hearts" data-star-captions="{}" value="0" type="number" class="rating" min=0 max=5 step=0.5 data-size="sm" id="ping_heart">
+                        </div>
+                        <div class="bb2" style="margin-right:10px;" @click="addNewPing()" v-if="okBtn == 0"><i class="icon-edit" style="margin-right:3px"></i>发布</div>
+                        <div class="bb2 animated flipInX" style="margin-right:10px;" v-if="okBtn != 0"><i class="icon-edit" style="margin-right:3px"></i>发布中...</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <%- include footer %>
+        <script src="/static/js/jquery.js"></script>
+        <script src="/static/js/script_new.js"></script>
+        <script src="/static/js/vue.min.js"></script>
+        <script src="/static/js/vue_app.js"></script>
+        <script src="/static/js/star-rating-ping.js" type="text/javascript"></script>
+        <script type="text/javascript">
+        var zhide = new Vue({
+            el: '.main',
+            data: {
+                user:'',
+                infos: '',
+                zhide: '',
+                more: false,
+                look: '查看更多',
+                more_img: '/static/images/look.png',
+                ZD_content: '',
+                addPicText: '添加图片',
+                okBtn: 0,
+                Heart:0,
+                Time:'',
+                ping:false,
+                comment:'',
+                Follow:'关注',
+                tag_arr:'',
+                comment_co:'',
+                comment2:false
+            },
+            methods: {
+                Comment_up:function(e,index){
+                    var c = $("#"+e).find("textarea").val();
+                    var _this  = this;
+                    if (c == '') {
+                        infosOn('请填写评价');
+                        return false
+                    };
+                    $.ajax({
+                        url: '/index/addCo_Co',
+                        type: "POST",
+                        data: {
+
+                            id: '<%= id %>',
+                            commentid:e,
+                            comment_co:c,
+                            time:_this.Time
+                        },
+                        success: function(data) {
+                            if (data.state == 200) {
+                                _this.comment_co = '';
+                                _this.getCoCo(e,index);
+                                console.log('ok');
+                                $("#"+e).find("textarea").val('');
+                            }
+                        },
+                    })
+
+                },
+                getCoCo:function(e,index){
+                    $("#"+e).find(".co_co").show();
+                    $("#"+e).find(".cb_4").show();
+                    var _this = this;
+                    $.ajax({
+                        url: '/index/getCoCo',
+                        type: "POST",
+                        data: {
+                            id:e,
+                        },
+                        success: function(data) {
+                            if (data.state == 200) {
+                                _this.comment[index].count = data.comment.length;
+                                _this.comment[index].comment_list = data.comment;
+                                console.log('ok')
+                            }
+                        },
+                    })
+                },
+                upCoCo:function(e){
+                    $("#"+e).find(".co_co").hide();
+                    $("#"+e).find(".cb_4").hide();
+                },
+                getZhide: function() {
+                    var _this = this;
+                    $.ajax({
+                        url: '/index/zhideContent',
+                        type: "POST",
+                        data: {
+                            id: '<%= id %>',
+                        },
+                        success: function(data) {
+                            if (data.state == 200) {
+                                _this.zhide = data.zhide;
+                                _this.tag_arr = data.results;
+                                setTimeout(function() {
+                                    var $input = $('input.rating'),
+                                        count = Object.keys($input).length;
+                                    if (count > 0) {
+                                        $input.rating();
+                                    }
+                                }, 0);
+                            }
+                        },
+                    })
+                },
+                Comment_zan:function(id,index){
+                  var m = $.inArray("000", this.comment[index].Zan_arr);
+                  if (m != '-1') {
+                    this.infosOn("已经点赞了哦！")
+                    return false
+                  }
+                   var _this = this;
+                   $.ajax({
+                        url: '/index/CommentZan',
+                        data:{
+                          id:id,
+                        },
+                        type: "POST",
+                        success: function(data) {
+                            if (data.state == 200) {
+                                //console.log()
+                               if (data.length == _this.comment[index].Zan_arr.length ) {
+                                  _this.infosOn("已经点赞了哦！") 
+                               }else{
+                                 _this.comment[index].Zan_arr.push('000'); 
+                               }
+                               
+                               
+                                
+                                //_this.ZanNum(index);
+                                 
+                            }else{
+                              
+                      _this.infosOn(data.error);
+                     
+                    
+                            }
+                        },
+                    });
+                    
+                },
+                Follow_z:function(){
+                  if (this.Follow == '已关注') {
+                    this.infosOn('已经关注了哦');
+                    return false
+                  }
+                  var _this = this;
+                    $.ajax({
+                        url: '/index/FollowZhide',
+                        type: "POST",
+                        data: {
+                            id: '<%= id %>',
+                            time:_this.Time
+                        },
+                        success: function(data) {
+                            if (data.state == 200) {
+                                _this.infosOn('关注成功');
+                                 _this.Follow = '已关注'
+                            }else{
+                              _this.infosOn(data.error)
+                            }
+                        },
+                    })
+                },
+                ZanNum:function(index){
+                  var m = this.comment[index].Zan_arr;
+                  if (!m) {
+                    return 0;
+                  }else{
+                    return m.length
+                  } 
+                },
+                rate:function(){
+                   if (this.zhide.Rate) {
+                    var arr = this.zhide.Rate;
+                   var all = 0;
+                   for (var i = 0; i < arr.length; i++) {
+                     all = parseFloat(arr[i]) + all
+                   }
+                   var m = all/arr.length
+                   return m;
+                   }
+                   
+                },
+                infosOn:function(e){
+            var _this = this;
+            this.infos = e;
+            setTimeout(function(){
+              _this.infos = '';
+            },2000);
+               },
+                Close:function(){
+                  this.ping = false;
+                },
+                getComment: function() {
+                    var _this = this;
+                    $.ajax({
+                        url: '/index/getComment',
+                        type: "POST",
+                        data: {
+                            id: '<%= id %>',
+                        },
+                        success: function(data) {
+                            if (data.state == 200) {
+                                _this.comment = data.comment;
+                                _this.comment2 = false;
+                                setTimeout(function() {
+                                    var $input = $('input.rating'),
+                                        count = Object.keys($input).length;
+                                    if (count > 0) {
+                                        $input.rating();
+                                    }
+                                }, 0);
+                                
+                            }else if(data.state == 403){
+
+                            }
+                        },
+                    })
+                },
+                Ping:function(){
+                  var _this = this;
+                    $.ajax({
+                        url: '/index/getUser',
+                        type: "POST",
+                        success: function(data) {
+                            if (data.state == 200) {
+                                _this.user = data.user;
+                                _this.ping=true;
+                                 setTimeout(function() {
+                                    var $input = $('input.rating'),
+                                        count = Object.keys($input).length;
+                                    if (count > 0) {
+                                        $input.rating();
+                                    }
+                                }, 0);
+                            }else{
+                              
+                      _this.infosOn('请先登录');
+                     
+                    
+                            }
+                        },
+                    });
+                    
+                   
+                },
+                getUser:function(){
+                  var _this = this;
+                    $.ajax({
+                        url: '/index/getUser',
+                        type: "POST",
+                        success: function(data) {
+                            if (data.state == 200) {
+                                _this.user = data.user;
+                                _this.offollow();
+                            }
+                        },
+                    });
+                    
+                   
+                },
+                offollow:function(){
+                  var _this = this;
+                  var arr = this.user.Follow_Zhide;
+                  if (arr) {
+                    for (var i = 0; i < arr.length; i++) {
+                    if(arr[i] == '<%= id %>'){
+                        _this.Follow = '已关注'
+                    }
+                  }
+                  }
+                  
+                },
+                addText: function() {
+                    $(".main_content").append('<div class="main_first animated bounceInRight"><textarea class="main_first_t" type="text" rows="4"></textarea></div>');
+                },
+                FileChange2: function(e) {
+                    var files = e.target.files || e.dataTransfer.files;
+                    if (!files.length) return;
+                    this.createImage2(files);
+                },
+
+                createImage2: function(file) {
+                    if (typeof FileReader === 'undefined') {
+                        alert('您的浏览器不支持图片上传，请升级您的浏览器');
+                        return false;
+                    }
+                    var image = new Image();
+                    var _this = this;
+                    var leng = file.length;
+                    for (var i = 0; i < leng; i++) {
+                        var reader = new FileReader();
+                        reader.readAsDataURL(file[i]);
+                        reader.onload = function(e) {
+                            _this.addPic = e.target.result;
+                            _this.goPic();
+                        };
+                    }
+                },
+                addNewPing: function() {
+                    if (this.ZD_content == '') {
+                      this.infosOn('请完善评论内容');return false;
+                    }
+                    
+                    var heart = $("#ping_heart").val();
+                    if (heart == 0) {
+                      this.infosOn('请评分');return false;
+                    }
+                    this.goTrans();
+                    this.okBtn = 1;
+                    var _this = this;
+                    $.ajax({
+                        url: '/index/addNewPing',
+                        type: "POST",
+                        data: {
+                            bid:_this.zhide.belong.objectId,
+                            zhide:'<%= id %>',
+                            heart:heart,
+                            user: _this.user,
+                            ZD_content: _this.ZD_content,
+                            Time: _this.Time
+                        },
+                        success: function(data) {
+                            if (data.state == 200) {
+                                _this.ping = false;
+                                _this.okBtn = 0;
+                                _this.getComment();
+
+                            }
+                        },
+                    })
+                },
+                inputImg: function(e) {
+                    var el = event.currentTarget;
+                    $(el).find('input').click();
+                },
+                lookmore: function() {
+                    this.more = !this.more;
+                    if (this.more) {
+                        this.look = '收起';
+                        this.more_img = '/static/images/look2.png'
+                    } else {
+                        this.look = "查看更多"
+                        this.more_img = '/static/images/look.png'
+                    }
+                },
+                goTrans:function(){
+            $('.main_first').each(function(){
+                var v = $(this).find('textarea').val();
+                $(this).html(v);
+                $(this).removeClass('animated');
+                $(this).removeClass('bounceInRight');
+            })
+            var mm = $('.main_content').html();
+            this.ZD_content = mm;
+        },
+        goPic:function(){
+          this.addPicText="添加中.."  
+          var _this = this;
+          $.ajax({
+            url:'/index/addPicContent',
+            data:{
+              pic:_this.addPic,
+            },
+            type:"POST",
+            success:function(e){
+               if (e.state == 200) {
+                  $(".main_content").append('<div style="width:100%"><img src="'+ e.pic.url +'"></div>');
+                  console.log(e.pic.url);
+                  _this.addPicText='添加图片'
+               }
+            }
+          })
+        },
+        onTime:function(){
+          var _this = this;
+          _this.Time = getNowFormatDate();
+          setInterval(function(){
+            _this.Time = getNowFormatDate();
+          },60000)
+        },
+            },
+            created: function() {
+                this.getZhide();
+                this.onTime();
+                this.getComment();
+                this.getUser();
+               
+            }
+        })
+        </script>
+        <script type="text/javascript">
+              $(window).scroll(function () {
+              //$('.header-bg ').css("background-size",$(this).scrollTop()/12+100+'%')
+              if ($(this).scrollTop() >= 200) {
+                $('#go_ping').show();
+                $('#go_ping').click(function(){
+                    $('#go_pp').click();
+                });
+              } else {
+                $('#go_ping').hide();
+              }
+            });
+        </script>
+</body>
+
+</html>

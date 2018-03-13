@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>新建-值得</title>
+    <link rel="shortcut icon" href="/static/favicons/1.png">
+    <link rel="stylesheet" href="/static/css/reset.css">
+    <link rel="stylesheet" href="/static/css/index.css">
+    <link rel="stylesheet" href="/static/css/animate.min.css">
+    <link rel="stylesheet" href="/static/css/font-awesome.css">
+</head>
+
+<body>
+    <div class="vue">
+        <header class="header" id="header" style="height:60px">
+            <div class="header-top header-top__fixed">
+                <%- include nav %>
+            </div>
+        </header>
+        <div class="main">
+            <div class="main-inner">
+                <div class="main-list">
+                </div>
+                <div class="new_head_2">
+                    <div class="new_head_logo"><img src="/static/images/logo.png"><span class="new_head_text">添加</span></div>
+                </div>
+                <!--                 <div class="taggle_btn">
+                    <div id="T1" class="T_add T_add_active">添加值得</div>
+                    <div id="T2" class="T_add">添加主题</div>
+                </div> -->
+                <div class="add_theme" style="display:none">
+                    <div class="add_theme_title">添加标签</div>
+                    <div>
+                        <div class="zhide_tag_new clearfix">
+                                <div class="tag_list clearfix">
+                                    <div class="tag-left"><span class="tag_dot">·</span></div>
+                                    <div class="tag-center">回车添加标签</div>                                   
+                                </div>
+                                <div class="tag_list clearfix" v-for="item in tag_arr">
+                                    <div class="tag-left"><span class="tag_dot">·</span></div>
+                                    <div class="tag-center">{{item}}</div>                                   
+                                </div>
+                                
+                            </div>
+                    <input placeholder="回车添加标签..." class="tag_add_input" v-model="tag" type="" name="" @keyup.enter = "addtag()">
+                    </div>
+                    <div class="add_theme_title">为你的值得选择个分类吧</div>
+                    <div class="main-list__wrapper clearfix" style="margin-top:20px;">
+                        <a @click="CheckC(theme.objectId)"  v-for="(theme,index) in Theme" style="margin-bottom:20px;position:relative;"><img class="blur" :src="theme.mainPic.url" :alt="theme.Theme_title"><span>{{theme.Theme_title}}</span><div class="check_t" v-if="CheckIn(theme.objectId)"><i class="icon-ok-circle ok_check_theme"></i></div></a>
+                        <div v-if="NewTheme">
+                            <a  @click="CheckC(NewTheme.objectId)" style="margin-bottom:20px;"><img class="blur" :src="NewTheme.mainPic.url" :alt="NewTheme.Theme_title"><span>{{NewTheme.Theme_title}}</span><div class="check_t" v-if="CheckIn(NewTheme.objectId)"><i class="icon-ok-circle ok_check_theme"></i></div></a>
+                        </div>
+                        
+                    </div>
+                    <div class="row">
+                        <div class="bbb2" @click="addToZhide()" style="margin-bottom:20px;"><i class="icon-ok" style="margin-right:3px"></i>选好了</div>
+                        </div>
+                    
+                    <div class="add_theme_title">或新建分类</div>
+                    <div class="theme_row">
+                        
+                    </div>
+                    <div class="new_theme">
+                        <div class="main-waterfall__row clearfix content_q" style="padding-left:173px">
+                            <div class="waterfall-imgbox waterfall-box" style="height:184px!important">
+                                <a class="img_a input_img" @click="inputImg($event)" href="#">
+                                    <input @change="FileChange2" style="display:none" type="file"><img :src="ThemePic?ThemePic:'/static/images/feng.png'" style="height:auto" alt="#"></a>
+                            </div>
+                            <div class="waterfall-box content_zhi" style="height:182px;width:600px;overflow:hidden">
+                                <div class="waterfall-info waterfall-info__top">
+                                    <h3 class="content_title"><input class="input_content_title" type="text" placeholder="这里输入分类标题" v-model="Theme_title" maxlength="8"></h3>
+                                    <p class="author">@{{user.Nick}}</p>
+                                    <div class="content_text">
+                                        <textarea maxlength="108" v-model="Theme_summary" class="input_content_text" type="text" rows="4" placeholder="这里输入描述（108字以内）..."></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bb22" @click="addNewTheme()" v-if="okThemeBtn==0"><i class="icon-edit" style="margin-right:3px"></i>新建分类</div>
+                        <div class="bb22" v-if="okThemeBtn== 1"><i class="icon-edit" style="margin-right:3px"></i>新建中...</div>
+                    </div>
+                </div>
+                <div class="add_content">
+                    <div class="main-waterfall__wrapper new_head_0">
+                        <div class="main-waterfall__row clearfix content_q" style="padding-left:173px">
+                            <div class="waterfall-imgbox waterfall-box" style="height:184px!important">
+                                <a class="img_a input_img" @click="inputImg($event)" href="#">
+                                    <input @change="FileChange" style="display:none" type="file"><img :src="UserPic?UserPic:'/static/images/feng.png'" style="height:auto" alt="#"></a>
+                            </div>
+                            <div class="waterfall-box content_zhi" style="height:182px;width:600px;overflow:hidden">
+                                <div class="waterfall-info waterfall-info__top">
+                                    <h3 class="content_title"><input class="input_content_title" type="text" placeholder="这里输入标题" v-model="ZD_title" maxlength="48"></h3>
+                                    <p class="author">@{{user.Nick}}<span class="content_time">{{Time}}</span></p>
+                                    <div class="content_text">
+                                        <textarea maxlength="108" v-model="ZD_summary" class="input_content_text" type="text" rows="4" placeholder="这里输入总结（108字以内）..."></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="recommend-line">
+                        <span class="text_line">正文部分</span>
+                    </div>
+                    
+                    <div class="new_main">
+                        <div class="main_content">
+                            <div class="main_first">
+                                <textarea v-model="ZD_content" class="main_first_t" type="text" rows="4"></textarea>
+                            </div>
+                        </div>
+                        <div class="main_bottom clearfix">
+                            <div class="bottom_left">
+                                <div class="bb1" @click="addText()"><i class="icon-edit" style="margin-right:3px"></i>添加段落</div>
+                                <div class="bb1" @click="inputImg($event)"><i class="icon-picture" style="margin-right:3px"></i>{{addPicText}}<input @change="FileChange2" style="display:none" type="file"></div>
+
+                            </div>
+                            <div class="bottom_right">
+                                <div class="bb2" @click="addNewZD()" v-if="okBtn == 0"><i class="icon-edit" style="margin-right:3px"></i>发布</div>
+                                <div class="bb2 animated flipInX" v-if="okBtn != 0"><i class="icon-edit" style="margin-right:3px"></i>发布中...</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="add_content">
+                </div>
+                <div class="all_ok" style="display:none">
+                    <div class="all_ok_text"><i class="icon-ok-circle c_green"></i>发布成功</div>
+                    <div>
+                        <a href="/index/newest">
+                            <div class="bb2">去最新看看</div>
+                        </a>
+                        <div class="bb2">我的值得</div>
+                    </div>
+                </div>
+                <div class="main-category clearfix">
+                </div>
+            </div>
+        </div>
+        <%- include footer %>
+            <%- include login %>
+    </div>
+    <script src="/static/js/jquery.js"></script>
+    <script src="/static/js/script_new.js"></script>
+    <script src="/static/js/vue.min.js"></script>
+    <script src="/static/js/vue_app.js"></script>
+</body>
+
+</html>

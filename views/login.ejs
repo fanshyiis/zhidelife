@@ -1,0 +1,33 @@
+<div class="user" id="user">
+            <div class="user-inner">
+                <div class="cricle-1"></div>
+                <div class="cricle-2"></div>
+                <img src="/static/images/logo_zhide.png" alt="#" class="login-logo">
+                <div class="register " style="height:292px;">
+                    <div class="cricle-3 animated rubberBand">去登录</div>
+                    <div class="holder animated flipInX">
+                        <div class="with-line"><span>邮箱注册</span></div>
+                        <div class="mail-login">
+                            <input type="text" class="text" placeholder="输入邮箱" v-model="UserName">
+                            <input type="text" class="text" placeholder="输入昵称" v-model="Nick">
+                            <input type="password" class="password" placeholder="密码" v-model="Pwdreg_1">
+                            <input type="password" class="password" placeholder="再次输入密码" v-model='Pwdreg_2'>
+                            <!-- <div class="clearfix"><input type="text" class="text" placeholder="输入验证码" v-model="SmsCode" style="width:60%;float:left"><div @click="SendSmsCode" class="login-up" style="width:35%;float:left;margin-left:12px;height:32px;line-height:32px;cursor:pointer">{{ SendBtn }}</div></div> -->
+                            <a href="#" class="login-up" @click="Register">注册</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="login" style="height:232px;">
+                    <div class="cricle-4 animated rubberBand">去注册</div>
+                    <div class="holder animated flipInX">
+                        <div class="with-line"><span>使用账号登录</span></div>
+                        <div class="mail-login">
+                            <input type="text" class="text" placeholder="输入账号" v-model='UserName'>
+                            <input type="password" class="password" placeholder="密码" v-model='Pwd'>
+                            <a href="#" class="login-up" @click='Login'>登录</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="close"><span></span></div>
+            </div>
+        </div>
